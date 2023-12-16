@@ -1,0 +1,16 @@
+components:
+  schemas:
+    GreetingsPostRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "success"
+        name:
+          type: string
+    GreetingsResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Olá Rafael Becker"

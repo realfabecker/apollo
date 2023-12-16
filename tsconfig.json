@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "lib": [
+      "es6"
+    ],
+    "types": [
+      "node",
+      "reflect-metadata"
+    ],
+    "allowJs": true,
+    "outDir": "build",
+    "rootDir": ".",
+    "strict": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": "src",
+    "paths": {
+      "@apollo/*": [
+        "./*",
+      ],
+      "@domain/*": [
+        "core/domain/*"
+      ],
+      "@ports/*": [
+        "core/ports/*"
+      ],
+      "@services/*": [
+        "core/services/*"
+      ],
+      "@adapters/*": [
+        "adapters/*"
+      ],
+      "@handlers/*": [
+        "handlers/*"
+      ]
+    }
+  },
+  "ts-node": {
+    "require": [
+      "tsconfig-paths/register"
+    ]
+  }
+}
