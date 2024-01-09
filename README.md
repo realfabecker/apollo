@@ -11,8 +11,6 @@
 ## Início Rápido
 
 ```bash
-#!/bin/bash
-
 git clone https://github.com/realfabecker/apollo.git
 cd apollo
 docker compose up
@@ -28,16 +26,12 @@ irá exigir a instalação local em seu ambiente do [NodeJS v16](https://nodejs.
 Clone o repositório apollo em seu ambiente local e realize a compilação do projeto:
 
 ```bash
-#!/bin/bash
-
 docker compose build
 ```
 
 Com o projeto disponível será possível inicializar a ambiente com suas configurações padrão:
 
 ```bash
-#!/bin/bash
-
 docker compose up
 ```
 
@@ -48,16 +42,12 @@ Assegure-se de ter o NodeJs devidamente instalado caso optado por não utilizar 
 Tendo realizado o clone do projeto realize a instalação das dependências de aplicação
 
 ```bash
-#!/bin/bash
-
 npm install
 ```
 
 Crie um arquivo .env local para desenvolvimento e exporte suas configurações
 
 ```bash
-#!/bin/bash
-
 cat <<'EOL' > .env.local
 APOLLO__PORT=3000
 APOLLO__HOST=http://localhost
@@ -70,8 +60,6 @@ export $(cat .env.local)
 Inicie o projeto em modo watch considerando cenário de desenvolvimento
 
 ```bash
-#!/bin/bash
-
 npm run watch
 ```
 
@@ -80,8 +68,6 @@ npm run watch
 A partir da instalação do projeto este terá sua interface http na porta 3000
 
 ```bash
-#!/bin/bash
-
 curl -v http://localhost:3000/api/status
 ```
 

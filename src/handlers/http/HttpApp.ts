@@ -9,6 +9,8 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
+import path from "path";
+import fs from "fs";
 import swaggerSp from "../../../docs/specs/openapi.json";
 import { getReasonPhrase, ReasonPhrases, StatusCodes } from "http-status-codes";
 
@@ -35,10 +37,26 @@ export class HttpApp implements IHttpApp {
 
   register(): void {
     this.app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSp));
+    this.app.get("/api/docs.json", this.specs);
     this.app.get("/api/status", this.router.getStatus.bind(this.router));
     this.app.get("/api/greet", this.router.getGreet.bind(this.router));
     this.app.post("/api/greet", this.router.postGreet.bind(this.router));
+    this.app.use((req, res) => res.redirect("/api/docs"));
     this.app.use(this.error.bind(this));
+  }
+
+  specs(req: Request, res: Response) {
+    const d = path.join(
+      __dirname,
+      "..",
+      "..",
+      "..",
+      "docs",
+      "specs",
+      "openapi.json",
+    );
+    const b = fs.readFileSync(d, { encoding: "utf8" }) || "{}";
+    res.status(200).json(JSON.parse(b));
   }
 
   error(err: Error, req: Request, res: Response, next: NextFunction) {
