@@ -117,21 +117,13 @@ como abertura para acesso às regras de negócio da aplicação.
 * `/bin/cmd` definição de executável de linha de comando.
 * `/bin/http` definição de executável de interface http.
 
-## Dependências
+## Change log
 
-* [ExpressJS](https://expressjs.com/pt-br/) - Web framework
-* [Inversify](https://inversify.io/) - Injeção de dependências
-* [swagger-jsdoc](https://www.npmjs.com/package/swagger-jsdoc) - Documentação openapi
-* [swagger-ui-express](https://www.npmjs.com/package/swagger-ui-express) - Interface openapi
+Veja o [CHANGELOG](./CHANGELOG.md) para informações sobre as alterações mais recentes aplicadas no projeto.
 
 ## Contribuições
 
 Refira-se ao guia de [contribuições](./docs/CONTRIBUTING.md) para detalhes de como contribuir para o projeto.
-
-## Versionamento
-
-O projeto utilizada [SemVer](https://semver.org/) para o versionamento. Para todas as versões disponíveis verifique as
-[tags nesse repositório](https://github.com/realfabecker/apollo/tags).
 
 ## Licença
 
