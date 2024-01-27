@@ -3,8 +3,8 @@ import { inject, injectable } from "inversify";
 import swaggerJSDoc from "swagger-jsdoc";
 import fs from "fs";
 import path from "path";
-import { IApolloConfig, ILogger, Types } from "@ports/ports";
-import * as process from "process";
+import { IApolloConfig, ILogger } from "@ports/ports";
+import { Types } from "@ports/types";
 
 @injectable()
 export class DocsGenCmd {
@@ -29,7 +29,7 @@ export class DocsGenCmd {
           definition: {
             openapi: "3.0.0",
             info: {
-              title: "API",
+              title: "Apollo Rest API",
               version: "0.0.1",
             },
             servers: [
@@ -41,7 +41,7 @@ export class DocsGenCmd {
           },
           apis: [
             base + "/src/handlers/http/*.ts",
-            base + "/docs/specs/components/schemas/*.yml",
+            base + "/src/handlers/http/dtos/*.ts",
           ],
         };
 

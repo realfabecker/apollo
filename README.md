@@ -51,6 +51,7 @@ Crie um arquivo .env local para desenvolvimento e exporte suas configurações
 cat <<'EOL' > .env.local
 APOLLO__PORT=3000
 APOLLO__HOST=http://localhost
+APOLLO__TOKEN=123aAxZc&6V!
 NODE_ENV=development
 EOL
 
@@ -72,7 +73,6 @@ curl -v http://localhost:3000/api/status
 ```
 
 A interface openapi do projeto pode ser acessada por http://localhost:3000/api/docs
-
 
 <img src="./docs/images/openapi.png" alt="open api documentation" style="border: 2px solid  gray; border-radius:15px">
 
@@ -116,6 +116,17 @@ como abertura para acesso às regras de negócio da aplicação.
 
 * `/bin/cmd` definição de executável de linha de comando.
 * `/bin/http` definição de executável de interface http.
+
+## Compilação
+
+O processo de compilação / publicação do projeto deve ser realizado por seu respectivo [Makefile](./Makefile)
+
+```bash
+BUILD_NUMBER=1 make build
+```
+
+A partir desse sera realizado a compilação dos artefatos do projeto considerando a linguagem base bem como a publicação
+de imagem docker no registro de imagens definido na configuração de compilação.
 
 ## Change log
 

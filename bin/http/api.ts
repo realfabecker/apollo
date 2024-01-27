@@ -1,9 +1,9 @@
 import "reflect-metadata";
 //ts-ignore
 import "tsconfig-paths/register";
-import { IApolloConfig, IHttpApp, Types } from "@ports/ports";
+import { IApolloConfig, IHttpApp } from "@ports/ports";
+import { Types } from "@ports/types";
 import { container } from "@apollo/container";
-import * as process from "process";
 
 try {
   const cnf = container.get<IApolloConfig>(Types.ApolloConfig);

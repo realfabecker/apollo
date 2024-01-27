@@ -9,6 +9,7 @@ services:
     environment:
       APOLLO__PORT: 3000
       APOLLO__HOST: http://localhost
+      APOLLO__TOKEN: 123aAxZc&6V!
       NODE_ENV: development
     volumes:
       - .:/app

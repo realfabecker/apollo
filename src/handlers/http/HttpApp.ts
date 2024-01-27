@@ -2,26 +2,46 @@
 import "express-async-errors";
 import express, { Request, Response, NextFunction } from "express";
 import { inject, injectable } from "inversify";
-import { IHttpApp, ILogger, Types } from "@ports/ports";
+import { IHttpApp, IHttpAuth, ILogger } from "@ports/ports";
 import Boom from "@hapi/boom";
-import { HttpRouter } from "@handlers/http/HttpRouter";
+import { StatusRouter } from "@handlers/http/StatusRouter";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import path from "path";
 import fs from "fs";
-import swaggerSp from "../../../docs/specs/openapi.json";
 import { getReasonPhrase, ReasonPhrases, StatusCodes } from "http-status-codes";
+import { Types } from "@ports/types";
+import { VehicleRouter } from "@handlers/http/VehicleRouter";
+import { ZodError } from "zod";
 
+import swaggerSp from "../../../docs/specs/openapi.json";
+import { OauthRouter } from "@handlers/http/OauthRouter";
+
+/**
+ * @openapi
+ * components:
+ *  securitySchemes:
+ *    BearerAuth:
+ *      type: http
+ *      scheme: bearer
+ *    BasicAuth:
+ *      type: http
+ *      scheme: basic
+ */
 @injectable()
 export class HttpApp implements IHttpApp {
   private readonly app: express.Application;
 
   constructor(
-    private router: HttpRouter,
     @inject(Types.Logger)
     private logger: ILogger,
+    @inject(Types.HttpAuth)
+    private httpAuth: IHttpAuth,
+    private statusRouter: StatusRouter,
+    private vehicleRouter: VehicleRouter,
+    private oauthRouter: OauthRouter,
   ) {
     this.app = express();
     this.app.use(helmet());
@@ -36,16 +56,52 @@ export class HttpApp implements IHttpApp {
   }
 
   register(): void {
+    // docs path definition
     this.app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSp));
-    this.app.get("/api/docs.json", this.specs);
-    this.app.get("/api/status", this.router.getStatus.bind(this.router));
-    this.app.get("/api/greet", this.router.getGreet.bind(this.router));
-    this.app.post("/api/greet", this.router.postGreet.bind(this.router));
-    this.app.use((req, res) => res.redirect("/api/docs"));
-    this.app.use(this.error.bind(this));
+    this.app.get("/api/docs.json", this.getSpecsHandler);
+
+    // status path definition
+    this.app.get(
+      "/api/status",
+      this.statusRouter.getStatus.bind(this.statusRouter),
+    );
+
+    // oauth path definition
+    this.app.post(
+      "/api/oauth/token",
+      this.oauthRouter.postToken.bind(this.oauthRouter),
+    );
+
+    // auth middleware definition
+    this.app.use(this.getAuthMiddleware.bind(this));
+
+    // vehicle path definition
+    this.app.post(
+      "/api/vehicles",
+      this.vehicleRouter.postVehicle.bind(this.vehicleRouter),
+    );
+    this.app.get(
+      "/api/vehicles",
+      this.vehicleRouter.listVehicles.bind(this.vehicleRouter),
+    );
+    this.app.get(
+      "/api/vehicles/:id",
+      this.vehicleRouter.getVehicle.bind(this.vehicleRouter),
+    );
+    this.app.patch(
+      "/api/vehicles/:id",
+      this.vehicleRouter.pathVehicle.bind(this.vehicleRouter),
+    );
+    this.app.delete(
+      "/api/vehicles/:id",
+      this.vehicleRouter.deleteVehicle.bind(this.vehicleRouter),
+    );
+
+    // error middleware binding
+    this.app.use(this.getErrorMiddleware.bind(this));
   }
 
-  specs(req: Request, res: Response) {
+  getSpecsHandler(req: Request, res: Response) {
     const d = path.join(
       __dirname,
       "..",
@@ -59,9 +115,22 @@ export class HttpApp implements IHttpApp {
     res.status(200).json(JSON.parse(b));
   }
 
-  error(err: Error, req: Request, res: Response, next: NextFunction) {
+  getErrorMiddleware(
+    err: Error,
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     if (res.headersSent) {
       return next(err);
+    }
+    if (err instanceof ZodError) {
+      const validationErrors = err.errors.map(
+        (error) => `${error.path.join(".")}: ${error.message}`,
+      );
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ status: StatusCodes.BAD_REQUEST, message: validationErrors });
     }
     if (Boom.isBoom(err)) {
       return res.status(err.output.statusCode).json({
@@ -75,5 +144,20 @@ export class HttpApp implements IHttpApp {
       status: StatusCodes.INTERNAL_SERVER_ERROR,
       message: ReasonPhrases.INTERNAL_SERVER_ERROR,
     });
+  }
+
+  async getAuthMiddleware(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      if (!(await this.httpAuth.authorize(req))) {
+        return next(Boom.unauthorized());
+      }
+      next();
+    } catch (e) {
+      next(Boom.unauthorized());
+    }
   }
 }

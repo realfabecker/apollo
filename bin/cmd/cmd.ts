@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 import "reflect-metadata";
 import "tsconfig-paths/register";
-import { IConsoleApp, Types } from "@ports/ports";
+import { IConsoleApp } from "@ports/ports";
 import { container } from "@apollo/container";
-import * as console from "console";
-import * as process from "process";
+import { Types } from "@ports/types";
 
 (async () => {
   try {
