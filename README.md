@@ -49,9 +49,9 @@ Crie um arquivo .env local para desenvolvimento e exporte suas configurações
 
 ```bash
 cat <<'EOL' > .env.local
-APOLLO__PORT=3000
-APOLLO__HOST=http://localhost
-APOLLO__TOKEN=123aAxZc&6V!
+APOLLO__APP__PORT=3000
+APOLLO__APP__HOST=http://localhost
+APOLLO__JWT__SECRET=123aAxZc&6V!
 NODE_ENV=development
 EOL
 

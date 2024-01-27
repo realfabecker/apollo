@@ -3,14 +3,15 @@ import { inject, injectable } from "inversify";
 import swaggerJSDoc from "swagger-jsdoc";
 import fs from "fs";
 import path from "path";
-import { IApolloConfig, ILogger } from "@ports/ports";
+import { ILogger } from "@ports/ports";
 import { Types } from "@ports/types";
+import { AppConfig } from "@domain/config";
 
 @injectable()
 export class DocsGenCmd {
   constructor(
     @inject(Types.Logger) private readonly logger: ILogger,
-    @inject(Types.ApolloConfig) private readonly config: IApolloConfig,
+    @inject(Types.AppConfig) private readonly config: AppConfig,
   ) {}
 
   Command(): yargs.CommandModule {
@@ -19,8 +20,8 @@ export class DocsGenCmd {
       describe: "generate open api docs",
       handler: async () => {
         const base = path.resolve(path.join(__dirname, "..", "..", ".."));
-        const host = this.config.get("host");
-        const port = this.config.get("port");
+        const host = this.config.app.host;
+        const port = this.config.app.port;
         const env = (process.env.NODE_ENV || "development")
           .substring(0, 3)
           .toUpperCase();

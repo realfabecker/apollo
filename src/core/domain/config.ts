@@ -11,8 +11,13 @@ export const BuildConfigSchema = z.object({
 });
 export type BuildConfig = z.infer<typeof BuildConfigSchema>;
 
-export const ApolloConfigSchema = z.object({
-  host: z.string(),
-  port: z.string(),
+export const AppConfigSchema = z.object({
+  app: z.object({
+    host: z.string(),
+    port: z.string(),
+  }),
+  jwt: z.object({
+    secret: z.string(),
+  }),
 });
-export type ApolloConfigEntity = z.infer<typeof ApolloConfigSchema>;
+export type AppConfig = z.infer<typeof AppConfigSchema>;

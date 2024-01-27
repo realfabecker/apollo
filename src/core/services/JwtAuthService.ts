@@ -1,13 +1,13 @@
 import { IAuthService, IJwtProvider } from "@ports/ports";
-import { inject, injectable, unmanaged } from "inversify";
+import { inject, injectable } from "inversify";
 import { Types } from "@ports/types";
-import process from "process";
+import { AppConfig } from "@domain/config";
 
 @injectable()
 export class JwtAuthService implements IAuthService {
   constructor(
     @inject(Types.JwtProvider) private readonly jwtProvider: IJwtProvider,
-    @unmanaged() private readonly key = <string>process.env.APOLLO__TOKEN,
+    @inject(Types.AppConfig) private readonly config: AppConfig,
   ) {}
 
   async auth(login: string, password: string): Promise<{ token: string }> {
@@ -16,14 +16,14 @@ export class JwtAuthService implements IAuthService {
         sub: login,
         pas: password,
       },
-      this.key,
+      this.config.jwt.secret,
     );
     return { token };
   }
 
   async verify(token: string): Promise<boolean> {
     try {
-      return !!this.jwtProvider.verify(token, this.key);
+      return !!this.jwtProvider.verify(token, this.config.jwt.secret);
     } catch (e) {
       return false;
     }

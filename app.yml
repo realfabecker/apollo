@@ -1,0 +1,5 @@
+app:
+  host: {{APOLLO__APP__HOST:-http://localhost}}
+  port: {{APOLLO__APP__PORT:-3000}}
+jwt:
+  secret: {{APOLLO__JWT__SECRET:-123aAxZc&6V!}}

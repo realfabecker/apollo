@@ -1,4 +1,4 @@
-import { ApolloConfigEntity, BuildConfig } from "@domain/config";
+import { AppConfig, BuildConfig } from "@domain/config";
 import { Vehicle, VehicleCreateDTO, VehicleUpdateDTO } from "@domain/vehicle";
 import express from "express";
 
@@ -42,6 +42,10 @@ export interface IBuildConfigReader {
   read(): Promise<BuildConfig | undefined>;
 }
 
+export interface IAppConfigReader {
+  read(): AppConfig;
+}
+
 export interface IVehicleRepository {
   create(data: VehicleCreateDTO): Promise<Vehicle>;
   list(): Promise<Vehicle[]>;
@@ -57,9 +61,3 @@ export interface IVehicleService {
   update(id: string, data: VehicleUpdateDTO): Promise<Vehicle>;
   remove(id: string): Promise<void>;
 }
-
-export interface IConfigStore<T extends object> {
-  get(key: keyof T): string;
-}
-
-export type IApolloConfig = IConfigStore<ApolloConfigEntity>;

@@ -4,7 +4,6 @@ import express, { Request, Response, NextFunction } from "express";
 import { inject, injectable } from "inversify";
 import { IHttpApp, IHttpAuth, ILogger } from "@ports/ports";
 import Boom from "@hapi/boom";
-import { StatusRouter } from "@handlers/http/StatusRouter";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -13,11 +12,11 @@ import path from "path";
 import fs from "fs";
 import { getReasonPhrase, ReasonPhrases, StatusCodes } from "http-status-codes";
 import { Types } from "@ports/types";
-import { VehicleRouter } from "@handlers/http/VehicleRouter";
 import { ZodError } from "zod";
-
 import swaggerSp from "../../../docs/specs/openapi.json";
-import { OauthRouter } from "@handlers/http/OauthRouter";
+import { StatusRouter } from "@handlers/http/routes/StatusRouter";
+import { VehicleRouter } from "@handlers/http/routes/VehicleRouter";
+import { OauthRouter } from "@handlers/http/routes/OauthRouter";
 
 /**
  * @openapi
